@@ -1,0 +1,90 @@
+data:
+  dataset: {name: TrainingData_v1, samples: 36577, type: private}
+  datasetLoadOption: full
+  kfold: 1
+  mapping:
+    Image:
+      options: {Augmentation: true, Height: 28, Normalization: true, Resize: true,
+        Scaling: 1, Width: 28, height_shift_range: '0.1', horizontal_flip: true, pretrained: InceptionV3,
+        rotation_range: '50', shear_range: '0.1', vertical_flip: false, width_shift_range: '0.1'}
+      port: InputPort0
+      shape: ''
+      type: Image
+    Rating:
+      options: {}
+      port: OutputPort0
+      shape: ''
+      type: Categorical
+  numPorts: 1
+  samples: {split: 5, test: 1828, training: 32919, validation: 1828}
+  shuffle: true
+model:
+  connections:
+  - {source: Input_1, target: Convolution2D_1}
+  - {source: Convolution2D_1, target: Convolution2D_2}
+  - {source: Dropout_2, target: Dense_2}
+  - {source: Convolution2D_2, target: MaxPooling2D_1}
+  - {source: Dropout_1, target: Flatten_1}
+  - {source: Flatten_1, target: Dense_1}
+  - {source: Dense_2, target: Output_1}
+  - {source: Dense_1, target: Dropout_2}
+  - {source: MaxPooling2D_1, target: Dropout_1}
+  layers:
+  - args: {}
+    class: Input
+    name: Input_1
+    x: 80
+    y: 81
+  - args: {}
+    class: Output
+    name: Output_1
+    x: 673
+    y: 626
+  - args: {activation: relu, nb_col: 3, nb_filter: '32', nb_row: 3}
+    class: Convolution2D
+    name: Convolution2D_1
+    x: 86
+    y: 214
+  - args: {activation: relu, nb_col: '3', nb_filter: '16', nb_row: '3'}
+    class: Convolution2D
+    name: Convolution2D_2
+    x: 92
+    y: 349
+  - args: {pool_size: '(2,2)'}
+    class: MaxPooling2D
+    name: MaxPooling2D_1
+    x: 88
+    y: 483
+  - args: {p: '0.2'}
+    class: Dropout
+    name: Dropout_1
+    x: 91
+    y: 617
+  - args: {}
+    class: Flatten
+    name: Flatten_1
+    x: 648
+    y: 80
+  - args: {activation: relu, output_dim: '128'}
+    class: Dense
+    name: Dense_1
+    x: 656
+    y: 204
+  - args: {p: '0.5'}
+    class: Dropout
+    name: Dropout_2
+    x: 667
+    y: 346
+  - args: {activation: softmax, output_dim: '36'}
+    class: Dense
+    name: Dense_2
+    x: 672
+    y: 486
+params:
+  advance_params: true
+  batch_size: 200
+  is_custom_loss: false
+  loss_func: categorical_crossentropy
+  num_epoch: 300
+  optimizer: {beta_1: '0.99', name: Adam}
+project: ZeroOneTest
